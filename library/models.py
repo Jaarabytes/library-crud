@@ -2,7 +2,11 @@
 Author: Jaarabytes
 
 Why not use Django ORMs? 
-ORMs can't handle complex SQL queries, which will be necessary since my app, no matter how small, will scale.
+ORMs can't handle complex SQL queries
+Raw SQL queries are faster
+
+Consult: https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321&ved=2ahUKEwiVyv-tgLmIAxUESvEDHVisBkcQFnoECEIQAQ&usg=AOvVaw0T6a9Z2m4rHbndFXgGcWry
+
 
 Schema:
 

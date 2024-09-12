@@ -1,8 +1,9 @@
-from django.urls import path, include
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('library/', include('library.urls')),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('', views.list_books, name='book_list'),
+    path('create/', views.add_book, name='book_create'),
+    path('update/<int:pk>/', views.edit_book, name='book_update'),
+    path('delete/<int:pk>/', views.delete_book, name='book_delete'),
 ]

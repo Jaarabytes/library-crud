@@ -1,8 +1,0 @@
-<h2>Books</h2>
-<ul>
-    {% for book in books %}
-    <li>{{ book.title }} by {{ book.author }} ({{ book.stock }} in stock)</li>
-    {% endfor %}
-</ul>
-<a href="{% url 'add_book' %}">Add New Book</a>
-

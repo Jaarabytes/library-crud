@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member List</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .editable:hover { background-color: #f5f5f5; cursor: pointer; }
+        #searchBox { margin-bottom: 20px; padding: 5px; width: 300px; }
+        .delete-btn { cursor: pointer; color: red; }
+    </style>
+</head>
+<body>
+    <h1>Member List</h1>
+
+    <input type="text" id="searchBox" placeholder="Search members...">
+
+    {% if members %}
+        <table id="memberTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Debt</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                <tr>
+                    <td>{{ member.0 }}</td>
+                    <td class="editable" data-id="{{ member.0 }}" data-field="name">{{ member.1 }}</td>
+                    <td class="editable" data-id="{{ member.0 }}" data-field="debt">{{ member.2 }}</td>
+                    <td><i class="fas fa-trash delete-btn" data-id="{{ member.0 }}"></i></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No members are available.</p>
+    {% endif %}
+
+    <p><a href="{% url 'add_member' %}">Add New Member</a></p>
+
+    <script>
+        $(document).ready(function() {
+            $("#searchBox").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#memberTable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $(".editable").on("click", function() {
+                var currentValue = $(this).text();
+                var input = $("<input type='text'>").val(currentValue);
+                $(this).html(input);
+                input.focus();
+
+                input.on("blur", function() {
+                    var newValue = $(this).val();
+                    var cell = $(this).parent();
+                    cell.html(newValue);
+
+                  // AJAX call to update the database
+                    $.ajax({
+                        url: "{% url 'update_member' %}",
+                        method: "POST",
+                        data: {
+                            id: cell.data("id"),
+                            field: cell.data("field"),
+                            value: newValue,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            if (response.status === "success") {
+                                console.log("Update successful");
+                            } else {
+                                console.error("Update failed: " + response.message);
+                                cell.html(currentValue);  // Revert to original value
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error("AJAX request failed: " + xhr.responseJSON.message);
+                            cell.html(currentValue);  // Revert to original value
+                        }
+                    });
+                });
+            });
+
+            $(".delete-btn").on("click", function() {
+                var memberId = $(this).data("id");
+                console.log(`Member id is ${memberId}`)
+                if (confirm("Are you sure you want to delete this member?")) {
+                    $.ajax({
+                        url: "{% url 'delete_member' %}",
+                        method: "POST",
+                        data: {
+                            id: memberId,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            if (response.status === "success") {
+                                $("tr").filter(function() {
+                                    return $(this).find("td:first").text() == memberId;
+                                }).remove();
+                            } else {
+                                alert("Delete failed: " + response.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            alert("AJAX request failed: " + xhr.responseJSON.message);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

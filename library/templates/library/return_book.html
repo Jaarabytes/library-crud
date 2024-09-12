@@ -1,0 +1,14 @@
+<h2>Return a Book</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="book_id">Book ID:</label>
+    <input type="number" name="book_id" required>
+
+     <label for="member_id">Member ID:</label>
+    <input type="number" name="member_id" required>
+
+   <label for="rent_fee">Rent Fee:</label>
+    <input type="number" name="rent_fee" required>
+
+    <button type="submit">Return Book</button>
+</form>

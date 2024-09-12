@@ -1,6 +1,0 @@
-<h1>{{ form.instance.pk|yesno:"Edit Book,Add New Book" }}</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>

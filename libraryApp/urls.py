@@ -16,16 +16,21 @@ Including another URLconf
 
 """
 
-
 from django.urls import path
-from . import views
+from library import views
+from django.shortcuts import redirect
 
 
 urlpatterns = [
+    path('', lambda request: redirect('books/', permanent=False)),
     path('books/', views.list_books, name='list_books'),
+    path('update_book/', views.update_book, name='update_book'),
     path('books/add/', views.add_book, name='add_book'),
+    path('books/delete/', views.delete_book, name='delete_book'),
     path('members/', views.list_members, name='list_members'),
+    path('members/add/', views.add_member, name='add_member'),
+    path('update_member/', views.update_book, name='update_member'),
+    path('members/delete/', views.delete_member, name='delete_member'),
     path('transactions/issue/', views.issue_book_view, name='issue_book'),
     path('transactions/return/', views.return_book_view, name='return_book'),
 ]
-
