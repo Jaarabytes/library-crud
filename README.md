@@ -19,14 +19,6 @@ Clone the repository:
 git clone https://github.com/Jaarabytes/library-crud.git
 ```		
 
-Change into the project directory:
-
-
-```
-cd library
-```
-
-
 Create a virtual environment (optional but recommended):
 
 
